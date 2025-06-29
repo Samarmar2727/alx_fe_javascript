@@ -127,7 +127,7 @@ async function syncQuotes() {
       }
     });
     if (added > 0) {
-      showNotification(`${added} new quote(s) synced from server.`);
+      showNotification("Quotes synced with server!");
       saveQuotes();
       populateCategories();
     }
@@ -135,6 +135,7 @@ async function syncQuotes() {
     console.error('Sync failed:', err);
   }
 }
+
 
 function showNotification(message) {
   const note = document.getElementById("notification");
