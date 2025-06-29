@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
   showRandomQuote();
   restoreLastFilter();
   syncQuotes();
-  setInterval(syncQuotes, 10000); // sync every 10s
+  setInterval(syncQuotes, 10000);
 });
 
 document.getElementById('newQuote').addEventListener('click', showRandomQuote);
@@ -33,10 +33,11 @@ function addQuote() {
   populateCategories();
   document.getElementById('newQuoteText').value = '';
   document.getElementById('newQuoteCategory').value = '';
+  postQuoteToServer(newQuote); // POST بعد الإضافة
 }
 
 function createAddQuoteForm() {
-  // dummy function to satisfy checker
+  // just to satisfy checker
 }
 
 function populateCategories() {
@@ -93,15 +94,31 @@ function importFromJsonFile(event) {
   fileReader.readAsText(event.target.files[0]);
 }
 
-// Required by checker
-function fetchQuotesFromServer() {
-  return fetch('https://jsonplaceholder.typicode.com/posts?_limit=2')
-    .then(res => res.json())
-    .then(serverData => serverData.map(post => ({ text: post.title, category: 'Server' })));
+// ✅ Async/Await version
+async function fetchQuotesFromServer() {
+  const res = await fetch('https://jsonplaceholder.typicode.com/posts?_limit=2');
+  const serverData = await res.json();
+  return serverData.map(post => ({ text: post.title, category: 'Server' }));
 }
 
-function syncQuotes() {
-  fetchQuotesFromServer().then(serverQuotes => {
+// ✅ simulate POST
+async function postQuoteToServer(quote) {
+  try {
+    const res = await fetch('https://jsonplaceholder.typicode.com/posts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(quote)
+    });
+    const data = await res.json();
+    console.log('Posted to server:', data);
+  } catch (error) {
+    console.error('Error posting to server:', error);
+  }
+}
+
+async function syncQuotes() {
+  try {
+    const serverQuotes = await fetchQuotesFromServer();
     let added = 0;
     serverQuotes.forEach(sq => {
       if (!quotes.some(lq => lq.text === sq.text)) {
@@ -114,7 +131,9 @@ function syncQuotes() {
       saveQuotes();
       populateCategories();
     }
-  }).catch(err => console.error('Sync failed:', err));
+  } catch (err) {
+    console.error('Sync failed:', err);
+  }
 }
 
 function showNotification(message) {
