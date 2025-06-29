@@ -1,0 +1,29 @@
+body {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  background-color: #f0f4f8;
+}
+
+h1 {
+  color: #333;
+}
+
+input, select, button {
+  margin: 5px;
+  padding: 8px;
+  font-size: 14px;
+}
+
+#quoteDisplay {
+  margin-top: 20px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+#notification {
+  background-color: #ffef96;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  display: none;
+}
